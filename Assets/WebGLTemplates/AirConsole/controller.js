@@ -7,6 +7,8 @@ var id = window.setInterval(progresso, 15);
 var parou = false;
 var parouOretorno = false;
 var width = 1;  //valor pra retornar
+var x = 0;
+var y = 0;
 function myCallback() {
     document.querySelector("#img").style.transform ='rotate(' + angle + 'deg)'; 
     angle += direcao;
@@ -25,7 +27,21 @@ function stop() {
     if (parouOretorno) {
         clearInterval(id);
         console.log(width);
-        window.app.sendMessageToScreen('interact', angle, width)
+        console.log(angle);
+        var radian = degrees_to_radians(angle)
+        // [x, y] = [Math.cos(radian), Math.sin(radian)]
+        x = Math.cos(radian);
+        y = Math.sin(radian);
+        console.log(x);
+        console.log(y);
+        window.app.sendMessageToScreen(
+            {
+                "action": 'interact', 
+                "x": x, 
+                "y": y, 
+                "force":width 
+            }
+        );
     } 
 }
 function progresso() {
@@ -42,3 +58,20 @@ function paraTudo() {
     clearInterval(id);
 }
 
+function degrees_to_radians(degrees)
+{
+  return degrees * (Math.PI/180);
+}
+
+function resetar() {
+     intervalID = window.setInterval(myCallback, 10);
+     angle = 0; //valor pra retornar
+     direcao = 1;
+     aux = 1;
+     id = window.setInterval(progresso, 15);
+     parou = false;
+     parouOretorno = false;
+     width = 1;  //valor pra retornar
+     x = 0;
+     y = 0;
+}

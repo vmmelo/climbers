@@ -3,37 +3,51 @@ using System.Collections.Generic;
 using UnityEngine;
 using NDream.AirConsole;
 using Newtonsoft.Json.Linq;
+using System;
+
 public class boneco : MonoBehaviour
+
 {
     private Rigidbody2D body;
 
-    // Start is called before the first frame update
-
-    private void Awake()
+    void Awake()
     {
         AirConsole.instance.onMessage += OnMessage;
     }
-    void OnMessage(int fromDeviceID, JToken data) {
-        if (data["action"] != null && data["action"].ToString().Equals("interact")) {
-            Pular(10, 2, -2);
-        }
-    }
+
     void Start()
     {
         body = transform.GetComponent<Rigidbody2D>();
-        
+
     }
 
-    // Update is called once per frame
-    void Update()
+    void OnMessage(int fromDeviceID, JToken data)
     {
-        if (Input.GetKeyDown(KeyCode.Space)) {
-            Pular(10,2,-2);
+        Debug.Log("message from" + fromDeviceID + ", data: " + data);
+        if (data["force"] != null && data["x"] != null && data["y"] != null)
+        {
+            float force = float.Parse(data["force"].ToString());
+            float x = float.Parse(data["x"].ToString());
+            float y = float.Parse(data["y"].ToString());
+            Pular(x, y, force*0.1F);
+            AirConsole.instance.Broadcast("MUDAR");
+            Debug.Log("MUDAR");
         }
     }
-    void Pular(float x , float y,float force)
+
+    
+
+    void OnDestroy()
     {
-        Vector2 direcao = new Vector2(x*force, y);
-        body.AddForce(direcao,ForceMode2D.Impulse);
+        if (AirConsole.instance != null)
+        {
+            AirConsole.instance.onMessage -= OnMessage;
+        }
+    }
+
+    private void Pular(float x, float y, float force)
+    {
+        Vector2 direcao = new Vector2(x * force*-1, y*force);
+        body.AddForce(direcao, ForceMode2D.Impulse);
     }
 }
