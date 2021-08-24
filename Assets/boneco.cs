@@ -9,10 +9,11 @@ public class boneco : MonoBehaviour
 
 {
     private Rigidbody2D body;
-
+    Boolean primeiroEntrou = false;
     void Awake()
     {
         AirConsole.instance.onMessage += OnMessage;
+        AirConsole.instance.onConnect += OnConnect;
     }
 
     void Start()
@@ -36,12 +37,22 @@ public class boneco : MonoBehaviour
     }
 
     
-
+    void OnConnect(int fromDeviceID){
+        Debug.Log(fromDeviceID +"Connected");
+        if (primeiroEntrou)
+        {
+            AirConsole.instance.Message(fromDeviceID,"MUDAR");
+        }else
+        {
+            primeiroEntrou = true;
+        }
+    }
     void OnDestroy()
     {
         if (AirConsole.instance != null)
         {
             AirConsole.instance.onMessage -= OnMessage;
+            AirConsole.instance.onConnect -= OnConnect;
         }
     }
 
