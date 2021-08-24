@@ -9,6 +9,7 @@ var parouOretorno = false;
 var width = 1;  //valor pra retornar
 var x = 0;
 var y = 0;
+var emEspera = false;
 function myCallback() {
     document.querySelector("#img").style.transform ='rotate(' + angle + 'deg)'; 
     angle += direcao;
@@ -17,32 +18,35 @@ function myCallback() {
     }
 }
 function stop() {
-    window.app.sendMessageToScreen('interact')
-    clearInterval(intervalID);
-    if (parou) {
-        parouOretorno = true;
-        console.log(angle);
+    if(emEspera == false){
+        window.app.sendMessageToScreen('interact')
+        clearInterval(intervalID);
+        if (parou) {
+            parouOretorno = true;
+            console.log(angle);
+        }
+        parou = true;
+        if (parouOretorno) {
+            clearInterval(id);
+            console.log(width);
+            console.log(angle);
+            var radian = degrees_to_radians(angle)
+            // [x, y] = [Math.cos(radian), Math.sin(radian)]
+            x = Math.cos(radian);
+            y = Math.sin(radian);
+            console.log(x);
+            console.log(y);
+            window.app.sendMessageToScreen(
+                {
+                    "action": 'interact', 
+                    "x": x, 
+                    "y": y, 
+                    "force":width 
+                }
+            );
+        } 
     }
-    parou = true;
-    if (parouOretorno) {
-        clearInterval(id);
-        console.log(width);
-        console.log(angle);
-        var radian = degrees_to_radians(angle)
-        // [x, y] = [Math.cos(radian), Math.sin(radian)]
-        x = Math.cos(radian);
-        y = Math.sin(radian);
-        console.log(x);
-        console.log(y);
-        window.app.sendMessageToScreen(
-            {
-                "action": 'interact', 
-                "x": x, 
-                "y": y, 
-                "force":width 
-            }
-        );
-    } 
+ 
 }
 function progresso() {
     if(parou){  
@@ -74,4 +78,21 @@ function resetar() {
      width = 1;  //valor pra retornar
      x = 0;
      y = 0;
+}
+function mudar() {
+    document.body.style.backgroundColor = "red";
+    if (emEspera) {
+        resetar();
+        emEspera = false;
+        document.body.style.backgroundColor = "white";
+        document.querySelector("#img").style.display='inline';
+        document.getElementById("myProgress").style.display='block';
+    }else{
+        clearInterval(id);
+        clearInterval(intervalID);
+        emEspera = true;
+        document.body.style.backgroundColor = "red";
+        document.querySelector("#img").style.display='none';
+         document.getElementById("myProgress").style.display='none';
+    }
 }
