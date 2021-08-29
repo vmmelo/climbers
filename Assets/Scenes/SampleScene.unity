@@ -314,6 +314,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameOverPoint: {fileID: 1940554962}
+  sendMessages: 1
   animator: {fileID: 305543307}
 --- !u!231 &305543305
 SpringJoint2D:
@@ -352,7 +353,7 @@ DistanceJoint2D:
   m_Anchor: {x: 0, y: 0}
   m_ConnectedAnchor: {x: 0, y: 0}
   m_AutoConfigureDistance: 0
-  m_Distance: 9
+  m_Distance: 1000000
   m_MaxDistanceOnly: 1
 --- !u!95 &305543307
 Animator:
@@ -714,6 +715,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameOverPoint: {fileID: 1940554962}
+  sendMessages: 0
   animator: {fileID: 806374421}
 --- !u!212 &806374419
 SpriteRenderer:

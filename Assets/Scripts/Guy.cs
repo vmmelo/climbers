@@ -7,6 +7,7 @@ using System;
 
 public class Guy : MonoBehaviour{
     [SerializeField] Transform gameOverPoint;
+    [SerializeField] Boolean sendMessages;
 
     private float speed = 0.1f;
     private Rigidbody2D guy1rb;
@@ -28,7 +29,8 @@ public class Guy : MonoBehaviour{
     }
 
     void Start()
-    {   animator.SetBool("ApuxandoV",true);
+    {   
+        animator.SetBool("ApuxandoV",true);
         guy1rb = GameObject.FindGameObjectWithTag("Player").GetComponent<Rigidbody2D>();
         guy2rb = GameObject.FindGameObjectWithTag("Player2").GetComponent<Rigidbody2D>();
         guy1 = GameObject.FindGameObjectWithTag("Player").GetComponent<Guy>();
@@ -46,7 +48,9 @@ public class Guy : MonoBehaviour{
             float x = float.Parse(data["x"].ToString());
             float y = float.Parse(data["y"].ToString());
             Pular(x, y, force*0.1F);
-            AirConsole.instance.Broadcast("MUDAR");
+            if(sendMessages){
+                AirConsole.instance.Broadcast("MUDAR");
+            }
             Debug.Log("MUDAR");
         }
     }
@@ -105,7 +109,9 @@ public class Guy : MonoBehaviour{
         }
         if (primeiroEntrou)
         {
-            AirConsole.instance.Message(fromDeviceID,"MUDAR");
+            if(sendMessages){
+                AirConsole.instance.Message(fromDeviceID,"MUDAR");
+            }
         } else
         {
             primeiroEntrou = true;
@@ -143,11 +149,8 @@ public class Guy : MonoBehaviour{
        
         if(active_player == 0){
             guy1rb.AddForce(direcao, ForceMode2D.Impulse);
-             
         } else if (active_player == 1){
             guy2rb.AddForce(direcao, ForceMode2D.Impulse);
-            
-           
         }
     }
 
@@ -177,7 +180,6 @@ public class Guy : MonoBehaviour{
         else if (active_player == 1){
             Debug.Log("player que esta sendo puxado é o 1");
             guy1rb.transform.position = Vector2.MoveTowards(guy1rb.transform.position, guy2rb.transform.position, speed);
-           
         }
     }
 
